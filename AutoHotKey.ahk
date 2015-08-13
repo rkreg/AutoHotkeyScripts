@@ -56,36 +56,60 @@ return
 ^+Up::
 	;; store old clipboard value, and clear it
 	oldClipboard := clipboard
+	sleep, 20
 	clipboard = 
+	sleep, 20
 
 	;; grab any currently selected text, save it, and clear the clipboard	
 	send, ^+x
+	sleep, 20
 	middle := clipboard
+	sleep, 20
 	clipboard = 
+	sleep, 20
 	
 	;; grab any text to the left of the cursor, save it, and clear the clipboard
 	send, {shift}+{home}
+	sleep, 20
 	send, ^+x
+	sleep, 20
 	left := clipboard
+	sleep, 20
 	clipboard = 
+	sleep, 20
 
 	;; grab any text to the right of the cursor, save it, and clear the clipboard
 	send, {shift}+{end}
+	sleep, 20
 	send, ^+x
+	sleep, 20
 	right := clipboard
+	sleep, 20
 	clipboard =
+	sleep, 20
 
 	;; delete the line the text was on. This has a small bug where it won't delete the line at the end of a file.
 	send, {delete}
+	sleep, 20
 
 	;; move up one line, assemble and output the grabbed text, and add a newline
 	;; send, {up}%left%%middle%%right%{enter}
 	send, {up}
+	sleep, 40
 	send, %left%
-	send, %middle%
+	sleep, 40
+	clipboard = %middle%
+	sleep, 40
+	paste()
+	sleep, 40
+;;	send, %middle%
+	sleep, 40
 	send, %right%
-	;;send, {enter}
-	;;send, {left}
+	sleep, 40
+	send, {enter}
+	sleep, 40
+	send, {left}
+	sleep, 40
 
 	;;restore clipboard
 	clipboard = %oldClipboard%
