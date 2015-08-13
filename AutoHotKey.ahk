@@ -4,18 +4,24 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 cut() {
-	send, ^+x
+	sendInput, ^+x
 }
 
 copy() {
-	send, ^+c
+	sendInput, ^+c
 }
 
 paste() {
-	send, ^+v
+	sendInput, ^+v
 }
 
 
+;; How many lines are in string
+lineCount(stringToCheck) {
+	ErrorLevel := 0
+ 	StringReplace, outputVar, stringToCheck, `n, `n, UseErrorLevel
+	Return ErrorLevel + 1
+}
 
 ;; Delete a line with ctrl+y (yank)
 ^y::
@@ -54,6 +60,12 @@ return
 
 ;; Move line(s) up
 ^+Up::
+	;;clear variables, since they aparently retain their values across calls.
+	timesToLoop :=
+	left :=
+	middle :=
+	right := 
+
 	;; store old clipboard value, and clear it
 	oldClipboard := clipboard
 	sleep, 20
@@ -61,7 +73,7 @@ return
 	sleep, 20
 
 	;; grab any currently selected text, save it, and clear the clipboard	
-	send, ^+x
+	cut()
 	sleep, 20
 	middle := clipboard
 	sleep, 20
@@ -69,9 +81,9 @@ return
 	sleep, 20
 	
 	;; grab any text to the left of the cursor, save it, and clear the clipboard
-	send, {shift}+{home}
+	sendInput, {shift}+{home}
 	sleep, 20
-	send, ^+x
+	cut()
 	sleep, 20
 	left := clipboard
 	sleep, 20
@@ -79,9 +91,9 @@ return
 	sleep, 20
 
 	;; grab any text to the right of the cursor, save it, and clear the clipboard
-	send, {shift}+{end}
+	sendInput, {shift}+{end}
 	sleep, 20
-	send, ^+x
+	cut()
 	sleep, 20
 	right := clipboard
 	sleep, 20
@@ -89,30 +101,38 @@ return
 	sleep, 20
 
 	;; delete the line the text was on. This has a small bug where it won't delete the line at the end of a file.
-	send, {delete}
+	sendInput, {delete}
 	sleep, 20
 
 	;; move up one line, assemble and output the grabbed text, and add a newline
-	;; send, {up}%left%%middle%%right%{enter}
-	send, {up}
+	sendInput, {up}
 	sleep, 40
-	send, %left%
+	sendInput, %left%
 	sleep, 40
 	clipboard = %middle%
 	sleep, 40
 	paste()
 	sleep, 40
-;;	send, %middle%
+	sendInput, %right%
 	sleep, 40
-	send, %right%
+	sendInput, {enter}
 	sleep, 40
-	send, {enter}
-	sleep, 40
-	send, {left}
+	sendInput, {left}
 	sleep, 40
 
 	;;restore clipboard
 	clipboard = %oldClipboard%
+
+	
+	sleep, 40
+	sendInput, {shift}+{home}
+	sleep, 40
+	additionalLinesToGrab := lineCount(middle) - 1
+	loop, %additionalLinesToGrab% {
+		;;msgBox %a_index%
+		sendInput, {shift}+{up}
+		sleep, 80
+	}
 return
 
 ;; Move line(s) down
