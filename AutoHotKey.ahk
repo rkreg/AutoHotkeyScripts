@@ -36,25 +36,24 @@ return
 ^d::
 	;; store old clipboard value, and clear it
 	oldClipboard := clipboard
-	sleep, 20
+	sleep, 40
 	clipboard = 
-	sleep, 20
+	sleep, 40
 
-	send, {home}
-	sleep, 20
-	send, {shift}+{end}
-	sleep, 20
+	sendInput, {home}
+	sleep, 40
+	sendInput, {shift}+{end}
+	sleep, 40
 	copy()
-	sleep, 20
-	send, {end}
-	sleep, 20
-	send, {enter}
-	sleep, 20
+	sleep, 40
+	sendInput, {end}
+	sleep, 40
+	sendInput, {enter}
+	sleep, 40
 	paste()
-	sleep, 20
+	sleep, 40
 
 	;;restore clipboard
-	sleep, 20
 	clipboard = %oldClipboard%
 return
 
